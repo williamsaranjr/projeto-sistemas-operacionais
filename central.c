@@ -1,3 +1,8 @@
+// William Saran dos Santos Junior - 10420128
+// Julia Vitoria Bomfim do Nascimento - 10425604
+// Andrey Bezerra Virginio dos Santos - 10420696
+// Igor Silva Araujo - 10428505
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -19,7 +24,7 @@ void inicializar_viaturas(int v[], int n) {
 }
 
 void* atender_ocorrencia(void* arg) {
-    time_t start = time(NULL);
+    time_t start = time(NULL); // Marca o início do atendimento
     int codigo = *(int*)arg; // Código identificador
 
     printf("[VIATURA %d] Se deslocando ao local da ocorrência\n", codigo);
@@ -28,8 +33,8 @@ void* atender_ocorrencia(void* arg) {
     printf("[VIATURA %d] Chegou ao local da ocorrência\n", codigo);
     sleep(rand() % 11 + 20); // Simula o tempo de atendimento
 
-    time_t finish = time(NULL);
-    long tempo = (long) difftime(finish, start);
+    time_t finish = time(NULL); // Fim do atendimento
+    long tempo = (long) difftime(finish, start); // Tempo do atendimento em 'minutos'
     printf("[VIATURA %d] Atendimento concluído em %lu minutos\n", codigo, tempo);
 
     viaturas[codigo - 1] = false; // Libera a viatura
