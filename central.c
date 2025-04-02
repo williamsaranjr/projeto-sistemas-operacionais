@@ -23,7 +23,9 @@ int MAXIMO_ATENDIMENTO = 15;
 pthread_t viaturas[MAXIMO_VIATURAS]; // Cada thread é uma viatura
 int idsViaturas[MAXIMO_VIATURAS]; // Array de identificador único de viaturas
 
-// Variáveis relacionadas ao controle da central
+// Variáveis críticas relacionadas à central
+// Essas variáveis são críticas pois são alteradas em tempo real tanto pela central, quanto pelas viaturas, por isso, a sincronização é necessária para garantir que
+// as viaturas disponíveis estejam corretamente representadas em memória, para evitar 'perder' uma das viaturas caso outra sobreescreva o array com valores desatualizados
 bool viaturasDisponiveis[MAXIMO_VIATURAS] = {false}; // Array para verificar se a viatura está em uso
 int viaturasEmUso = 0;
 int ocorrencias_atendidas = 0;
@@ -105,11 +107,11 @@ int main() {
             // Procura uma viatura disponível para atender a ocorrência
             for (int i = 0; i < viaturas_disponiveis; i++) {
                 if (!viaturasDisponiveis[i]) { // Se a viatura não estiver em uso
-                    pthread_mutex_lock(&viaturasMutex);
+                    pthread_mutex_lock(&viaturasMutex); // Aciona o mutex para garantir acesso exclusivo
                     viaturasEmUso++; // Incrementa o número de viaturas em uso
                     viaturasDisponiveis[i] = true; // Marca a viatura como em uso
                     ocorrencias_atendidas++; // Incrementa o número de ocorrências atendidas
-                    pthread_mutex_unlock(&viaturasMutex);
+                    pthread_mutex_unlock(&viaturasMutex); // Desbloqueia o mutex para permitir que outras threads acessem
 
                     // Aciona a thread da viatura
                     pthread_create(&viaturas[i], NULL, atender_ocorrencia, &idsViaturas[i]);
